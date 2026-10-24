@@ -30,14 +30,16 @@
 
 ## 复现步骤（Windows PowerShell）
 
-以下脚本保留了本次实验的绝对路径：Toolbox `D:\rppg\rPPG-Toolbox`、原始视频 `D:\Microsoft  edge`、缓存与结果 `G:`。在其他机器运行前，先修改脚本顶部的路径常量和三个 YAML 中的路径。软件环境记录为 Python 3.12.10、PyTorch 2.7.1+cu128、CUDA 12.8、NumPy 1.26.4、SciPy 1.11.4、OpenCV 4.8.1。
+以下脚本保留了本次实验的绝对路径：Toolbox `D:\rppg\rPPG-Toolbox`、测试视频所在的 `D:\Microsoft  edge`、缓存与结果 `G:`。原始受试者视频可能分布在多个目录；预处理脚本每次只扫描指定目录下的受试者，须对所有训练、验证、测试数据所在目录分别运行。在其他机器运行前，先修改脚本顶部的路径常量和三个 YAML 中的路径。软件环境记录为 Python 3.12.10、PyTorch 2.7.1+cu128、CUDA 12.8、NumPy 1.26.4、SciPy 1.11.4、OpenCV 4.8.1。
 
 1. 取得 rPPG-Toolbox 并固定到上面的提交。将 `toolbox_overlay/` 中 5 个文件按相同相对路径覆盖到 Toolbox。`main.py` 中 DataLoader 的 `num_workers=0` 及 `trainer/__init__.py` 中关闭 PhysMamba 导入，是这台 Windows 环境的兼容性改动。将 `splits/fixed_subject_split.csv` 复制到 `D:\rppg\EfficientPhysC_UBFC_Dataset2_subject_split.csv`。
 2. 从仓库根目录运行下面命令。已有本次缓存和模型时无需重跑训练；预处理脚本会保护现有配置，消融脚本会避免覆盖已有模型。
 
 ```powershell
 $py = 'D:\rppg\.venv\Scripts\python.exe'
+& $py -X utf8 .\scripts\preprocess_raw_subjects.py --source '<训练和验证视频目录>' --run
 & $py -X utf8 .\scripts\preprocess_raw_subjects.py --source 'D:\Microsoft  edge' --run
+& $py -X utf8 .\scripts\preprocess_raw_subjects.py --verify-only
 & $py -X utf8 .\scripts\prepare_raw_paper_experiment.py --apply
 & $py -X utf8 .\scripts\check_raw_paper_setup.py
 & $py -X utf8 .\scripts\run_training_clean.py --config_file 'G:\efficientphys_raw_paper_seed100.yaml'

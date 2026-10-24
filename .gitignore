@@ -1,0 +1,15 @@
+__pycache__/
+*.py[cod]
+*.bak
+*.pth
+*.pt
+*.pickle
+*.npy
+*.npz
+*.avi
+*.mp4
+*.log
+.venv/
+data/
+cache/
+outputs/
